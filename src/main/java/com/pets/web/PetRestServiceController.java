@@ -22,7 +22,8 @@ import java.util.Collections;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "pet-service/v1", consumes = PetRestServiceConstants.JSON_CONTENT_TYPE)
+@RequestMapping(value = "/pet-service/v1",
+  produces = PetRestServiceConstants.JSON_CONTENT_TYPE)
 public class PetRestServiceController {
 
     private final PetServiceMapper petServiceMapper;
@@ -41,51 +42,35 @@ public class PetRestServiceController {
 
     @GetMapping(value = "/dogs/{uuid}")
     public Dog getDog(@PathVariable("uuid") String uuid) {
-        return new Dog();
-    }
-
-    @GetMapping(value = "/dogs")
-    public List<Dog> getDogs() {
-        return Collections.emptyList();
+        return petService.getDogByUuid(uuid);
     }
 
     @PostMapping(value = "/dogs")
     public List<Dog> createDog(DogRequest dogRequest) {
-        return Collections.emptyList();
+        return petService.createDog(petServiceMapper.mapDog(dogRequest));
     }
 
     @DeleteMapping(value = "/dogs/breeds/{uuid}")
     public List<DogBreed> deleteDogBreeds(@PathVariable("uuid") String breedUuid) {
-        return Collections.emptyList();
+        return petService.deleteDogBreeds(breedUuid);
     }
 
     @PutMapping(value = "/dogs/{uuid}")
     public Dog updateDog(@PathVariable("uuid") String uuid, @RequestBody DogRequest dogRequest) {
-        return new Dog();
+        return petService.updateDog(uuid, petServiceMapper.mapDog(dogRequest));
     }
 
     @PatchMapping(value = "/dogs/{uuid}")
     public Dog partialUpdateDog(@PathVariable("uuid") String uuid, @RequestBody DogBreedRequest dogBreedRequest) {
-        return new Dog();
+        return petService.partialUpdateDog(uuid, petServiceMapper.mapDogBreed(dogBreedRequest));
     }
 
     @GetMapping(value = "/dogs")
-    public List<Dog> sortDogs(@RequestParam(name = "sort") String ageSortCondition) {
-        return Collections.emptyList();
-    }
-
-    @GetMapping(value = "/dogs")
-    public List<Dog> filterDogs(@RequestParam(name = "filter") String dogNameBreed) {
-        return Collections.emptyList();
-    }
-
-    @GetMapping(value = "/dogs/breeds/")
-    public DogBreed searchDogBreedsByName(@RequestParam(name = "search") String name) {
-        return new DogBreed();
-    }
-
-    @GetMapping(value = "/dogs")
-    public List<Dog> dogPagination(@RequestParam(name = "page") int paginationNum) {
-        return Collections.emptyList();
+    public List<Dog> getDogs(@RequestParam(name = "sort", required = false) String sortCondition,
+                             @RequestParam(name = "filter", required = false) String dogNameBreed,
+                             @RequestParam(name = "search", required = false) String name,
+                             @RequestParam(name = "iniPage", required = false) Integer iniPageNum,
+                             @RequestParam(name = "endPage", required = false) Integer endPageNum) {
+        return petService.getDogs(petServiceMapper.map(sortCondition, dogNameBreed, name, iniPageNum, endPageNum));
     }
 }
