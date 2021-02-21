@@ -90,8 +90,8 @@ public class PetServiceImpl implements PetService {
   }
 
   @Override
-  public List<DogBreed> deleteDogBreeds(String breedUuid) {
-    return petRepository.removeDogBreeds(breedUuid);
+  public List<Dog> deleteDog(String dogUuid) {
+    return petRepository.removeDog(dogUuid);
   }
 
   @Override

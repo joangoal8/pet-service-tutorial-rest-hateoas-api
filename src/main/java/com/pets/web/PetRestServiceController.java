@@ -46,13 +46,13 @@ public class PetRestServiceController {
     }
 
     @PostMapping(value = "/dogs")
-    public List<Dog> createDog(DogRequest dogRequest) {
+    public List<Dog> createDog(@RequestBody DogRequest dogRequest) {
         return petService.createDog(petServiceMapper.mapDog(dogRequest));
     }
 
-    @DeleteMapping(value = "/dogs/breeds/{uuid}")
-    public List<DogBreed> deleteDogBreeds(@PathVariable("uuid") String breedUuid) {
-        return petService.deleteDogBreeds(breedUuid);
+    @DeleteMapping(value = "/dogs/{uuid}")
+    public List<Dog> deleteDogBreeds(@PathVariable("uuid") String dogUuid) {
+        return petService.deleteDog(dogUuid);
     }
 
     @PutMapping(value = "/dogs/{uuid}")

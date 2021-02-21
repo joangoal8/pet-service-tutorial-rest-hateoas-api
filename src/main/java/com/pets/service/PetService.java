@@ -14,7 +14,7 @@ public interface PetService {
 
   List<Dog> createDog(Dog newDog);
 
-  List<DogBreed> deleteDogBreeds(String breedUuid);
+  List<Dog> deleteDog(String dogUuid);
 
   Dog updateDog(String uuid, Dog dog);
 

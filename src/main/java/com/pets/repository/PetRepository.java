@@ -13,7 +13,7 @@ public interface PetRepository {
 
   List<Dog> insertDog(Dog dog);
 
-  List<DogBreed> removeDogBreeds(String dogBreedUuid);
+  List<Dog> removeDog(String dogUuid);
 
   Dog updateFullDog(String uuid, Dog dog);
 

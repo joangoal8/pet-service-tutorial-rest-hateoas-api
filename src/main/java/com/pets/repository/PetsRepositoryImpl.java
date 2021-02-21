@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 @Repository
@@ -20,35 +21,25 @@ public class PetsRepositoryImpl implements PetRepository {
 
   @PostConstruct
   public void initData() {
-    Dog huskyDog = new Dog();
     String uuidHusky = "uuidDog1";
-    huskyDog.setId(uuidHusky);
-    huskyDog.setAge(2);
-    huskyDog.setName("Lyanna");
-    DogBreed husky = new DogBreed();
-    husky.setName("Siberian Husky");
-    husky.setFeatures("Independent, funny and energetic");
-    huskyDog.setBreed(husky);
+    DogBreed husky = DogBreed.builder().setName("Siberian Husky")
+      .setFeatures("Independent, funny and energetic"). build();
+    Dog huskyDog = Dog.builder().setId(uuidHusky)
+      .setAge(2).setName("Lyanna")
+      .setBreed(husky).build();
 
-    Dog malamuteDog = new Dog();
+
     String uuidMalamute = "uuidDog2";
-    malamuteDog.setId(uuidMalamute);
-    malamuteDog.setAge(3);
-    malamuteDog.setName("Anuk");
-    DogBreed malamute = new DogBreed();
-    malamute.setName("Alaskan malamute");
-    malamute.setFeatures("Independent, brave and tenant");
-    malamuteDog.setBreed(malamute);
+    DogBreed malamute = DogBreed.builder().setName("Alaskan malamute")
+      .setFeatures("Independent, brave and tenant").build();
+    Dog malamuteDog = Dog.builder().setId(uuidMalamute).setAge(3)
+      .setName("Anuk").setBreed(malamute).build();
 
-    Dog boyeroBernaDog = new Dog();
+    DogBreed boyeroBerna = DogBreed.builder().setName("Boyero Berna")
+      .setFeatures("Giant, brave and loyal").build();
     String uuidBoyero = "uuidDog3";
-    boyeroBernaDog.setId(uuidBoyero);
-    boyeroBernaDog.setAge(1);
-    boyeroBernaDog.setName("Brandom");
-    DogBreed boyeroBerna = new DogBreed();
-    boyeroBerna.setName("Boyero Berna");
-    boyeroBerna.setFeatures("Giant, brave and loyal");
-    boyeroBernaDog.setBreed(boyeroBerna);
+    Dog boyeroBernaDog = Dog.builder().setId(uuidBoyero)
+      .setAge(1).setName("Brandom").setBreed(boyeroBerna).build();
 
     dogs.put(uuidHusky, huskyDog);
     dogs.put(uuidMalamute, malamuteDog);
@@ -76,9 +67,9 @@ public class PetsRepositoryImpl implements PetRepository {
   }
 
   @Override
-  public List<DogBreed> removeDogBreeds(String dogBreedUuid) {
-    dogBreeds.remove(dogBreedUuid);
-    return new ArrayList<>(dogBreeds);
+  public List<Dog> removeDog(String dogUuid) {
+    dogs.remove(dogUuid);
+    return new ArrayList<>(dogs.values());
   }
 
   @Override
@@ -89,9 +80,13 @@ public class PetsRepositoryImpl implements PetRepository {
 
   @Override
   public Dog updatePartialDogInfo(String uuid, DogBreed dogBreed) {
-    Dog updatedDog = dogs.get(uuid);
-    updatedDog.setBreed(dogBreed);
-    dogs.put(uuid, updatedDog);
+    Dog dog = dogs.get(uuid);
+    if (Objects.nonNull(dog)) {
+      Dog updatedDog = Dog.builder().setId(dog.getId())
+        .setName(dog.getName()).setAge(dog.getAge())
+        .setBreed(dogBreed).build();
+      dogs.put(uuid, updatedDog);
+    }
     return dogs.get(uuid);
   }
 
