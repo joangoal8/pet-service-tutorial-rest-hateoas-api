@@ -1,5 +1,8 @@
 package com.pets.model;
 
+import java.util.Objects;
+import java.util.StringJoiner;
+
 public class DogBreed {
 
   private final String name;
@@ -42,4 +45,25 @@ public class DogBreed {
     }
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    DogBreed dogBreed = (DogBreed) o;
+    return Objects.equals(name, dogBreed.name) &&
+      Objects.equals(features, dogBreed.features);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, features);
+  }
+
+  @Override
+  public String toString() {
+    return new StringJoiner(", ", DogBreed.class.getSimpleName() + "[", "]")
+      .add("name='" + name + "'")
+      .add("features='" + features + "'")
+      .toString();
+  }
 }

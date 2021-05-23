@@ -3,6 +3,7 @@ package com.pets.service;
 import com.pets.model.Dog;
 import com.pets.model.DogBreed;
 import com.pets.model.DogQueryCondition;
+import com.pets.model.Owner;
 import com.pets.repository.PetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -102,5 +103,15 @@ public class PetServiceImpl implements PetService {
   @Override
   public Dog partialUpdateDog(String uuid, DogBreed dogBreed) {
     return petRepository.updatePartialDogInfo(uuid, dogBreed);
+  }
+
+  @Override
+  public Owner getOwnerByUuid(String ownerUuid) {
+    return petRepository.retrieveOwnerByUuid(ownerUuid);
+  }
+
+  @Override
+  public List<Dog> getOwnerDogs(String ownerUuid) {
+    return petRepository.retrieveOwnerDogs(ownerUuid);
   }
 }

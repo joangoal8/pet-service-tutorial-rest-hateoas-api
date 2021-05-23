@@ -1,12 +1,14 @@
 package com.pets.web;
 
 import com.pets.model.Dog;
-import com.pets.model.DogBreed;
+import com.pets.model.Owner;
 import com.pets.service.PetService;
 import com.pets.web.mapper.PetServiceMapper;
 import com.pets.web.request.DogBreedRequest;
 import com.pets.web.request.DogRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Link;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -20,6 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping(value = "/pet-service/v1",
@@ -73,4 +79,25 @@ public class PetRestServiceController {
                              @RequestParam(name = "endPage", required = false) Integer endPageNum) {
         return petService.getDogs(petServiceMapper.map(sortCondition, dogNameBreed, name, iniPageNum, endPageNum));
     }
+
+    @GetMapping(value = "/owners/{uuid}")
+    public CollectionModel<Owner> getOwner(@PathVariable("uuid") String uuid) {
+        Owner owner = petService.getOwnerByUuid(uuid);
+        Link dogsLinks = linkTo(methodOn(PetRestServiceController.class)
+          .getDogsOwner(uuid)).withRel("ownerDogs");
+        return Objects.isNull(owner) ? CollectionModel.of(Collections.emptyList())
+          : CollectionModel.of(Collections.singletonList(owner), dogsLinks);
+    }
+
+    @GetMapping(value = "/owners/{uuid}/dogs")
+    public CollectionModel<Dog> getDogsOwner(@PathVariable("uuid") String uuid) {
+        List<Dog> dogs = petService.getOwnerDogs(uuid);
+        dogs.forEach(dog -> {
+            Link selfLink = linkTo(methodOn(PetRestServiceController.class)
+              .getDog(dog.getId())).withSelfRel();
+            dog.add(selfLink);
+        });
+        return CollectionModel.of(dogs);
+    }
+
 }
